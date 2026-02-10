@@ -78,7 +78,7 @@ Se ha creado exitosamente la documentación completa para el módulo AUTH - Aute
 
 ### APIs Documentadas
 
-- `POST /auth/login` - Autenticación de usuarios
+- `POST /api/security/signOn` - Autenticación de usuarios
 - `POST /auth/logout` - Cierre de sesión
 - `POST /auth/refresh` - Renovación de token
 - `POST /auth/validate` - Validación de token

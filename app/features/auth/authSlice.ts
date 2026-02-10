@@ -32,7 +32,7 @@ export const loginUser = createAsyncThunk(
   async (credentials: LoginCredentials, { rejectWithValue }) => {
     try {
       const response = await apiClient.post<BackendAuthResponse>(
-        "/auth/login",
+        "/security/signOn",
         credentials
       );
 
