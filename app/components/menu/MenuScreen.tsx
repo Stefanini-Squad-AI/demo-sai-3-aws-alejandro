@@ -125,7 +125,7 @@ export function MenuScreen({
               ) : (
                 <Dashboard sx={{ mr: 1, verticalAlign: 'middle' }} />
               )}
-              Select an Option
+              Selecciona una opción
             </Typography>
           </Box>
 
@@ -224,7 +224,7 @@ export function MenuScreen({
                 color="primary.main"
                 fontWeight={600}
               >
-                Enter your selection:
+                Ingrese su selección:
               </Typography>
               
               <TextField
@@ -262,7 +262,7 @@ export function MenuScreen({
                   fontWeight: 600,
                 }}
               >
-                Continue
+                Continuar
               </Button>
             </Box>
 
@@ -300,7 +300,7 @@ export function MenuScreen({
             >
               <Typography variant="body2" color="text.secondary">
                 <KeyboardReturn sx={{ fontSize: 16, mr: 0.5, verticalAlign: 'middle' }} />
-                ENTER = Continue
+                ENTER = Continuar / F3 = Salir
               </Typography>
               
               <Button
@@ -314,7 +314,7 @@ export function MenuScreen({
                 disabled={loading}
                 sx={{ borderRadius: 2 }}
               >
-                F3 = Exit
+                F3 = Salir
               </Button>
             </Stack>
           </Box>
