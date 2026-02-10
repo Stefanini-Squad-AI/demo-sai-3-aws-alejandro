@@ -62,11 +62,11 @@ Ubicación: `/app/services/authApi.ts`
 
 **Endpoints disponibles**:
 ```typescript
-POST /auth/login          // Login de usuario
-POST /auth/logout         // Logout de usuario
-POST /auth/refresh        // Refrescar access token
-POST /auth/validate       // Validar token JWT
-GET  /auth/health         // Health check del servicio
+POST /api/security/signOn  // Login de usuario (endpoint documentado)
+POST /auth/logout          // Logout de usuario
+POST /auth/refresh         // Refrescar access token
+POST /auth/validate        // Validar token JWT
+GET  /auth/health          // Health check del servicio
 ```
 
 **Interfaces principales**:
@@ -149,8 +149,8 @@ Ubicación: `/app/pages/LoginPage.tsx`
 
 ## 🔗 APIs Documentadas
 
-### POST /auth/login
-**Descripción**: Autenticar usuario y obtener tokens
+### POST /api/security/signOn
+**Descripción**: Autentica al usuario usando el endpoint documentado `/api/security/signOn` y retorna los tokens y metadatos esperados por el cliente.
 
 **Request**:
 ```json
@@ -163,14 +163,17 @@ Ubicación: `/app/pages/LoginPage.tsx`
 **Response exitosa (200)**:
 ```json
 {
-  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "refreshToken": "mock-refresh-token-ADMIN001",
-  "tokenType": "Bearer",
-  "userId": "ADMIN001",
-  "fullName": "Administrator User",
-  "userType": "A",
-  "expiresIn": 3600,
-  "message": "Login successful"
+  "success": true,
+  "data": {
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refreshToken": "mock-refresh-token-ADMIN001",
+    "tokenType": "Bearer",
+    "userId": "ADMIN001",
+    "fullName": "Administrator User",
+    "userType": "A",
+    "expiresIn": 3600,
+    "message": "Login successful"
+  }
 }
 ```
 
@@ -530,7 +533,7 @@ sequenceDiagram
     U->>LP: Ingresa credenciales
     LP->>LP: Valida campos (max 8 chars)
     LP->>AS: dispatch(loginUser)
-    AS->>API: POST /auth/login
+    AS->>API: POST /api/security/signOn
     API->>BE: Request con credenciales
     BE->>API: AuthResponse (tokens + user)
     API->>AS: Retorna respuesta

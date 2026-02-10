@@ -114,7 +114,7 @@ const mockUsers: User[] = [
 
 // Handlers de autenticación
 export const authHandlers = [
-  http.post(`${API_BASE}/auth/login`, async ({ request }) => {
+http.post(`${API_BASE}/security/signOn`, async ({ request }) => {
     const body = (await request.json()) as { userId: string; password: string };
 
     console.log('🔐 MSW Login attempt:', body);

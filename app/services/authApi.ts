@@ -24,7 +24,7 @@ export const authApi = {
    * Autenticar usuario
    */
   login: async (credentials: LoginCredentials) => {
-    return apiClient.post<AuthResponse>('/auth/login', credentials);
+    return apiClient.post<AuthResponse>('/security/signOn', credentials);
   },
 
   /**

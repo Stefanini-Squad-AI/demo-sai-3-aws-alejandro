@@ -420,7 +420,7 @@
                 <p><strong>Reutilización:</strong> Servicio con todos los endpoints de autenticación</p>
                 <p><strong>Endpoints:</strong></p>
                 <ul>
-                    <li><code>POST /auth/login</code> - Login</li>
+                    <li><code>POST /api/security/signOn</code> - Login (endpoint documentado)</li>
                     <li><code>POST /auth/logout</code> - Logout</li>
                     <li><code>POST /auth/refresh</code> - Refrescar token</li>
                     <li><code>POST /auth/validate</code> - Validar token</li>
@@ -569,7 +569,7 @@
 
             <h3>🌐 Interfaces Públicas (APIs)</h3>
             
-            <h4>POST /auth/login</h4>
+            <h4>POST /api/security/signOn</h4>
             <div class="code-block">
 // Request
 {
@@ -579,18 +579,22 @@
 
 // Response (200 OK)
 {
-  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "refreshToken": "mock-refresh-token-ADMIN001",
-  "tokenType": "Bearer",
-  "userId": "ADMIN001",
-  "fullName": "Administrator User",
-  "userType": "A",
-  "expiresIn": 3600,
-  "message": "Login successful"
+  "success": true,
+  "data": {
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refreshToken": "mock-refresh-token-ADMIN001",
+    "tokenType": "Bearer",
+    "userId": "ADMIN001",
+    "fullName": "Administrator User",
+    "userType": "A",
+    "expiresIn": 3600,
+    "message": "Login successful"
+  }
 }
 
 // Response (401 Unauthorized)
 {
+  "success": false,
   "error": "Invalid credentials",
   "message": "User ID or password incorrect"
 }
