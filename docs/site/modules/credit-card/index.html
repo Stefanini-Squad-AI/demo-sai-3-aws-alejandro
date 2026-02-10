@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CREDIT CARD - Guía Operacional de Historias</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #222;
+            background: #f5f7fa;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #7928ca 0%, #ff0080 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .header a {
+            color: #ffe082;
+            text-decoration: underline;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            color: #ff0080;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .section h3 {
+            color: #333;
+            margin-bottom: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .card {
+            border: 2px solid #f2f2f5;
+            border-radius: 10px;
+            padding: 1.5rem;
+            background: #fafafa;
+            min-height: 170px;
+        }
+
+        .card h4 {
+            color: #7928ca;
+            margin-bottom: 0.5rem;
+        }
+
+        ul {
+            margin-top: 1rem;
+            column-count: 1;
+            list-style: none;
+            padding-left: 1rem;
+        }
+
+        ul li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        ul li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #ff0080;
+            font-weight: 700;
+        }
+
+        pre {
+            background: #1d1f27;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #7928ca;
+            color: white;
+            font-weight: 600;
+        }
+
+        .rule {
+            background: #ffe4f0;
+            padding: 1rem 1.25rem;
+            border-left: 4px solid #ff0080;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+        }
+
+        .complexity {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: #fff0f6;
+            border: 1px solid #ffb6c1;
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+            color: #a2006d;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+
+        footer a {
+            color: #7928ca;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>💳 CREDIT CARD - Guía Operacional</h1>
+        <p>Listar tarjetas, inspeccionar detalles y actualizar plásticos con validaciones estrictas, teclas legacy y MSW para pruebas.</p>
+        <p style="margin-top: 0.75rem;">
+            <strong>Documentación extendida:</strong>
+            <a href="../../../modules/credit-card/credit-card-overview.md">docs/modules/credit-card/credit-card-overview.md</a>
+        </p>
+    </header>
+
+    <div class="container">
+        <section class="section">
+            <h2>📋 Visión general del módulo</h2>
+            <p>
+                El módulo CREDIT CARD conecta tres vistas protegidas (list, view, update) con hooks específicos que llaman a `/api/credit-cards/*`. Cada pantalla usa `SystemHeader` (CCLI, CCDL, CCUP), `LoadingSpinner` cuando hay mutaciones activas y MUI para mantener consistencia de layout. Las validaciones replican los mensajes del backend y se muestran antes de construir el payload final.
+            </p>
+            <ul>
+                <li>La lista obliga a filtros numéricos y agrega test data (account/card) que dispara búsquedas con un solo ENTER.</li>
+                <li>El detalle busca automáticamente cuando proviene de un SELECT y muestra alertas con `infoMessage` o `errorMessage`.</li>
+                <li>La actualización protege la edición con `changeAction`, dialog de confirmación y botones F5/F12 para guardar o cancelar.</li>
+            </ul>
+            <div class="grid">
+                <div class="card">
+                    <h4>Teclas heredadas</h4>
+                    <p>F3 = Salir, F7/F8 = Paginación, ENTER = Continuar, F5 = Guardar, F12 = Cancelar. El `handleKeyDown` de cada pantalla centraliza la lógica.</p>
+                </div>
+                <div class="card">
+                    <h4>Datos de prueba</h4>
+                    <p>Los seis escenarios (12345678901, 98765432109, 11111111111…) están sincronizados con `mockCardDetails` y `mockCardUpdateDetails` para QA.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>🎯 Guía de User Stories</h2>
+            <div class="grid">
+                <div class="card">
+                    <h4>Consulta rápida</h4>
+                    <p><strong>Como agente de soporte</strong>, quiero ingresar un Account ID y ver cuántas tarjetas activas tiene esa cuenta sin salir del flujo.</p>
+                </div>
+                <div class="card">
+                    <h4>Detalle contextual</h4>
+                    <p><strong>Como operador</strong>, quiero ver el nombre embosado, CVV oculto y status con chips para validar un reporte de fraude.</p>
+                </div>
+                <div class="card">
+                    <h4>Edición segura</h4>
+                    <p><strong>Como supervisor</strong>, quiero validar cambios, mostrar el diálogo de confirmación y guardar la nueva expiry sin datos inválidos.</p>
+                </div>
+            </div>
+            <div class="complexity">Simple (1-2 pts): Buscar + ver resultados</div>
+            <div class="complexity">Medio (3-5 pts): Validaciones de edición</div>
+            <div class="complexity">Complejo (5-8 pts): Auditoría + errores del backend</div>
+        </section>
+
+        <section class="section">
+            <h2>⚡ Factores de aceleración</h2>
+            <ul>
+                <li><strong>Hooks especializados</strong>: `useCreditCardList`, `useCreditCardDetail` y `useCreditCardUpdate` ya encapsulan `useMutation` y validaciones.</li>
+                <li><strong>MSW</strong>: los handlers duplican las validaciones del COBOL original con delays (600-800 ms) y `infoMessage`/`errorMessage`.</li>
+                <li><strong>Components compartidos</strong>: `SystemHeader`, `LoadingSpinner`, `Dialog` y Chips permiten enfocarse en UX.</li>
+                <li><strong>Test data</strong>: listas de tarjetas y cuentas predefinidas aceleran QA sin backend.</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>🔧 Fundamento técnico</h2>
+            <div class="grid">
+                <div class="card">
+                    <h4>CreditCardListScreen.tsx</h4>
+                    <p>Búsqueda por account/card, validación en `handleInputChange`, botón Search con `LoadingSpinner`, `testData` y tabla con selección `S`/`U`.</p>
+                    <p><strong>Ubicación:</strong> <code>/app/components/creditCard/CreditCardListScreen.tsx</code></p>
+                </div>
+                <div class="card">
+                    <h4>CreditCardDetailScreen.tsx</h4>
+                    <p>Autobúsqueda desde `state`, test data desplegable, Chips de estado y `Alert` con Retry. Usa `useCreditCardDetail` y `formatExpiryDate`.</p>
+                    <p><strong>Ubicación:</strong> <code>/app/components/creditCard/CreditCardDetailScreen.tsx</code></p>
+                </div>
+                <div class="card">
+                    <h4>CreditCardUpdateScreen.tsx</h4>
+                    <p>Controla `changeAction`, validaciones de nombre/status/expiración, diálogo de confirmación y atajos F5/F12.</p>
+                    <p><strong>Ubicación:</strong> <code>/app/components/creditCard/CreditCardUpdateScreen.tsx</code></p>
+                </div>
+                <div class="card">
+                    <h4>useCreditCardUpdate.ts</h4>
+                    <p>Mapea el enum de status (`A`, `I`), compara `newDetails` vs `oldDetails`, y expone `handleValidateChanges` + `handleSaveChanges`.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>🌐 Interfaces públicas</h2>
+            <pre><code>POST /api/credit-cards/list      → Lista paginada, filtros accountId/cardNumber</code></pre>
+            <pre><code>POST /api/credit-cards/details   → Detalle con infoMessage y cvvCode opcional</code></pre>
+            <pre><code>POST /api/credit-cards/search    → Devuelve datos actuales para editar</code></pre>
+            <pre><code>PUT  /api/credit-cards/update    → Persiste cambios (embossedName, activeStatus, expiry)</code></pre>
+            <pre><code>POST /api/credit-cards/update/reset-test-data</code></pre>
+            <pre><code>GET  /api/credit-cards/update/test-cards</code></pre>
+        </section>
+
+        <section class="section">
+            <h2>📊 Modelos y validaciones clave</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Descripción</th>
+                        <th>Regla</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>accountId</td><td>ID de cuenta</td><td>11 dígitos, no 000...000</td></tr>
+                    <tr><td>cardNumber</td><td>Plástico</td><td>16 dígitos numéricos</td></tr>
+                    <tr><td>embossedName</td><td>Nombre en la tarjeta</td><td>Letras y espacios, ≤50, se envía en mayúsculas</td></tr>
+                    <tr><td>activeStatus</td><td>Status</td><td>'A' = Active, 'I' = Inactive</td></tr>
+                    <tr><td>expiryMonth/Year</td><td>Fecha de expiración</td><td>Mes 1-12, año ≥ actual y ≤2099</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section class="section">
+            <h2>📋 Reglas de negocio</h2>
+            <div class="rule">
+                <strong>RN-CC-01:</strong> Solo una tarjeta puede seleccionarse y confirmarse con ENTER para evitar ambigüedad.
+            </div>
+            <div class="rule">
+                <strong>RN-CC-02:</strong> CVV y cardNumber siempre se muestran en monospace, con chips o masking para reforzar seguridad.
+            </div>
+            <div class="rule">
+                <strong>RN-CC-03:</strong> El backend (MSW) responde errores específicos (`Account number not provided`, `Card number must be a 16 digit number`).
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>✅ Criterios de aceptación</h2>
+            <div class="grid">
+                <div class="card">
+                    <h4>Búsqueda válida</h4>
+                    <p>Dado 12345678901, cuando busco, entonces la tabla muestra las tarjetas esperadas y el chip indica la página.</p>
+                </div>
+                <div class="card">
+                    <h4>Error en detalle</h4>
+                    <p>Dado un cardNumber inválido, cuando busco, entonces aparece `Card number if supplied must be a 16 digit number`.</p>
+                </div>
+                <div class="card">
+                    <h4>Guardar cambios</h4>
+                    <p>Dado un nombre correcto y `activeStatus` válido, cuando presiono F5 y confirmo, entonces el Alert muestra `Changes committed to database`.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>⚡ Presupuestos de performance</h2>
+            <ul>
+                <li>Search <500 ms en producción (MSW usa 800 ms para forcear robustez).</li>
+                <li>Update <800 ms con `apiClient` (timeout 10 s, abort controller evita llamadas duplicadas).</li>
+                <li>Siempre se cargan 7 filas para mantener performance y replicar la pantalla legacy.</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>🧪 Pruebas y mocks</h2>
+            <div class="grid">
+                <div class="card">
+                    <h4>creditCardHandlers</h4>
+                    <p>Filtra por account/card, valida `User-Type`, simula errores 400 y paginación.</p>
+                </div>
+                <div class="card">
+                    <h4>creditCardDetailHandlers</h4>
+                    <p>Valida inputs y devuelve `mockCardDetails` con `infoMessage: 'Displaying requested details'`.</p>
+                </div>
+                <div class="card">
+                    <h4>creditCardUpdateHandlers</h4>
+                    <p>Gestiona `/search`, `/update`, reset de test data y `/test-cards`. Mantiene `mockCardUpdateDetails` actualizado.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>🚨 Riesgos y mitigaciones</h2>
+            <div class="grid">
+                <div class="card">
+                    <h4>Dependencia del backend</h4>
+                    <p>Sin API real no podemos validar tokens; planificar pruebas contra backend para verificar errores 500.</p>
+                </div>
+                <div class="card">
+                    <h4>Datos sensibles</h4>
+                    <p>CVV y cardNumber viven en estado. Evitar mantenerlos después de salir invocando `handleExit`.</p>
+                </div>
+                <div class="card">
+                    <h4>Auditoría faltante</h4>
+                    <p>El UI no registra el usuario que confirma el PUT; sugerido integrar `userId` cuando el backend lo soporte.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>📚 Documentación complementaria</h2>
+            <p>Consulta la visión detallada en <a href="../../../modules/credit-card/credit-card-overview.md">docs/modules/credit-card/credit-card-overview.md</a> y la vista general en <a href="../../../system-overview.md#-credit-card---gestión-de-tarjetas-de-crédito">system-overview.md</a>.</p>
+        </section>
+    </div>
+
+    <footer>
+        <p><a href="../../index.html">← Volver al índice principal</a></p>
+        <p><a href="../../../system-overview.md">🏠 Volver al System Overview</a></p>
+        <p><a href="../../../modules/credit-card/credit-card-overview.md">📘 Leer credit-card-overview.md</a></p>
+    </footer>
+</body>
+</html>
