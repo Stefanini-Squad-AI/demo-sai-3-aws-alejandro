@@ -56,44 +56,44 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
     {
       accountId: '12345678901',
       cardNumber: '4532123456789012',
-      description: 'Active Account - Multiple Cards',
+      description: 'Cuenta activa - varias tarjetas',
       expectedResults: 2,
-      status: 'Active'
+      status: 'ACTIVE'
     },
     {
       accountId: '98765432109',
       cardNumber: '5555666677778888',
-      description: 'Mixed Status Account',
+      description: 'Cuenta con estado mixto',
       expectedResults: 2,
-      status: 'Mixed'
+      status: 'MIXED'
     },
     {
       accountId: '11111111111',
       cardNumber: '4111111111111111',
-      description: 'Single Expired Card',
+      description: 'Tarjeta expirada',
       expectedResults: 1,
-      status: 'Expired'
+      status: 'EXPIRED'
     },
     {
       accountId: '22222222222',
       cardNumber: '4222222222222222',
-      description: 'Active Premium Account',
+      description: 'Cuenta premium activa',
       expectedResults: 1,
-      status: 'Active'
+      status: 'ACTIVE'
     },
     {
       accountId: '33333333333',
       cardNumber: '4333333333333333',
-      description: 'High Volume Account',
+      description: 'Cuenta de alto volumen',
       expectedResults: 1,
-      status: 'Active'
+      status: 'ACTIVE'
     },
     {
       accountId: '44444444444',
       cardNumber: '4444444444444444',
-      description: 'Inactive Account',
+      description: 'Cuenta inactiva',
       expectedResults: 1,
-      status: 'Inactive'
+      status: 'INACTIVE'
     },
   ];
 
@@ -180,32 +180,29 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
   }, [onExit, handleExit, canGoPrev, canGoNext, currentPage, handlePageChange, selectedCards, handleProcessSelection]);
 
   const getStatusColor = (status: string) => {
-    switch (status) {
+    const normalized = status?.toUpperCase();
+    switch (normalized) {
       case 'ACTIVE': return 'success';
       case 'INACTIVE': return 'default';
       case 'BLOCKED': return 'error';
       case 'EXPIRED': return 'warning';
+      case 'MIXED': return 'warning';
       default: return 'default';
     }
   };
 
   const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'ACTIVE': return 'A';
-      case 'INACTIVE': return 'I';
-      case 'BLOCKED': return 'B';
-      case 'EXPIRED': return 'E';
-      default: return status.charAt(0);
-    }
-  };
-
-  const getTestStatusColor = (status: string) => {
-    switch (status) {
-      case 'Active': return 'success';
-      case 'Inactive': return 'default';
-      case 'Mixed': return 'warning';
-      case 'Expired': return 'error';
-      default: return 'default';
+    const normalized = status?.toUpperCase();
+    switch (normalized) {
+      case 'ACTIVE': return 'Activo';
+      case 'INACTIVE': return 'Inactivo';
+      case 'BLOCKED': return 'Bloqueado';
+      case 'EXPIRED': return 'Expirado';
+      case 'MIXED': return 'Mixto';
+      default:
+        return status
+          ? status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()
+          : '';
     }
   };
 
@@ -215,7 +212,7 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
         <SystemHeader
           transactionId="CCLI"
           programName="COCRDLIC"
-          title="List Credit Cards"
+          title="Listar Tarjetas de Crédito"
         />
 
         <Paper
@@ -236,10 +233,10 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
           >
             <Typography variant="h5" fontWeight={600} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <CreditCard />
-              List Credit Cards
+              Listar Tarjetas de Crédito
               {totalPages > 0 && (
                 <Chip
-                  label={`Page ${currentPage}`}
+                  label={`Página ${currentPage}`}
                   size="small"
                   sx={{ 
                     ml: 'auto',
@@ -257,11 +254,11 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
               <Grid container spacing={3} alignItems="flex-end">
                 <Grid item xs={12} md={4}>
                   <TextField
-                    label="Account Number"
+                    label="Número de cuenta"
                     value={searchForm.accountId || ''}
                     onChange={handleInputChange('accountId')}
                     error={!!validationErrors.accountId}
-                    helperText={validationErrors.accountId || '11 digits'}
+                    helperText={validationErrors.accountId || '11 dígitos'}
                     disabled={loading}
                     fullWidth
                     inputProps={{
@@ -287,11 +284,11 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
 
                 <Grid item xs={12} md={4}>
                   <TextField
-                    label="Credit Card Number"
+                    label="Número de tarjeta de crédito"
                     value={searchForm.cardNumber || ''}
                     onChange={handleInputChange('cardNumber')}
                     error={!!validationErrors.cardNumber}
-                    helperText={validationErrors.cardNumber || '16 digits'}
+                    helperText={validationErrors.cardNumber || '16 dígitos'}
                     disabled={loading}
                     fullWidth
                     inputProps={{
@@ -322,7 +319,7 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
                       startIcon={loading ? <LoadingSpinner size={20} /> : <Search />}
                       sx={{ borderRadius: 2, minWidth: 120 }}
                     >
-                      {loading ? 'Searching...' : 'Search'}
+                      {loading ? 'Buscando...' : 'Buscar'}
                     </Button>
                     <Button
                       variant="outlined"
@@ -331,7 +328,7 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
                       startIcon={<Clear />}
                       sx={{ borderRadius: 2 }}
                     >
-                      Clear
+                      Limpiar
                     </Button>
                   </Stack>
                 </Grid>
@@ -348,7 +345,7 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
                   onClick={() => setShowTestData(!showTestData)}
                   sx={{ borderRadius: 2 }}
                 >
-                  {showTestData ? 'Hide' : 'Show'} Test Data
+                  {showTestData ? 'Ocultar datos de prueba' : 'Mostrar datos de prueba'}
                 </Button>
               </Box>
             )}
@@ -365,10 +362,10 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
                 }}
               >
                 <Typography variant="subtitle2" gutterBottom color="info.main" fontWeight={600}>
-                  Test Data (Development Only)
+                  Datos de prueba (solo desarrollo)
                 </Typography>
                 <Typography variant="caption" color="text.secondary" sx={{ mb: 2, display: 'block' }}>
-                  Click on Account ID or Card Number to search
+                  Haz clic en Número de cuenta o Número de tarjeta para buscar
                 </Typography>
                 
                 <Grid container spacing={1}>
@@ -397,7 +394,7 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
                                   color: 'primary.main',
                                 }}
                               >
-                                Account: {item.accountId}
+                                Cuenta: {item.accountId}
                               </Button>
                               <Button
                                 variant="text"
@@ -411,7 +408,7 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
                                   color: 'secondary.main',
                                 }}
                               >
-                                Card: {item.cardNumber}
+                                Tarjeta: {item.cardNumber}
                               </Button>
                             </Stack>
                           </Grid>
@@ -421,15 +418,15 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
                               {item.description}
                             </Typography>
                             <Typography variant="caption" color="text.secondary">
-                              Expected results: {item.expectedResults} card(s)
+                              Resultados esperados: {item.expectedResults} tarjeta(s)
                             </Typography>
                           </Grid>
                           
                           <Grid item xs={12} sm={3}>
                             <Chip
-                              label={item.status}
+                              label={getStatusLabel(item.status)}
                               size="small"
-                              color={getTestStatusColor(item.status) as any}
+                              color={getStatusColor(item.status) as any}
                               variant="outlined"
                             />
                           </Grid>
@@ -441,14 +438,14 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
 
                 {/* Instrucciones adicionales */}
                 <Box sx={{ mt: 2, p: 2, bgcolor: alpha(theme.palette.warning.main, 0.1), borderRadius: 1 }}>
-                  <Typography variant="caption" color="text.secondary">
-                    <strong>Testing Tips:</strong><br />
-                    • Search by Account ID to see all cards for that account<br />
-                    • Search by Card Number to find a specific card<br />
-                    • Leave both fields empty to see all cards (admin users only)<br />
-                    • Use F7/F8 for pagination when results span multiple pages<br />
-                    • Click S (View) or U (Update) buttons to select a card, then press ENTER
-                  </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      <strong>Consejos de prueba:</strong><br />
+                      • Busca por Número de cuenta para ver todas las tarjetas de esa cuenta<br />
+                      • Busca por Número de tarjeta para encontrar una tarjeta específica<br />
+                      • Deja ambos campos vacíos para ver todas las tarjetas (solo usuarios admin)<br />
+                      • Usa F7/F8 para paginar cuando los resultados abarquen varias páginas<br />
+                      • Presiona S (Ver) o U (Actualizar) para seleccionar una tarjeta y luego ENTER
+                    </Typography>
                 </Box>
               </Paper>
             </Collapse>
@@ -467,7 +464,7 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
           {data && data.content.length > 0 && (
             <Box sx={{ px: 3, py: 1, bgcolor: alpha(theme.palette.success.main, 0.1) }}>
               <Typography variant="body2" color="success.dark" fontWeight={500}>
-                Found {totalElements} card(s) • Showing page {currentPage} of {totalPages}
+                {totalElements} registros encontrados • Página {currentPage} de {totalPages}
               </Typography>
             </Box>
           )}
@@ -479,22 +476,22 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
                 <TableRow sx={{ bgcolor: alpha(theme.palette.primary.main, 0.1) }}>
                   <TableCell width="10%">
                     <Typography variant="subtitle2" fontWeight={600}>
-                      Select
+                      Seleccionar
                     </Typography>
                   </TableCell>
                   <TableCell width="35%">
                     <Typography variant="subtitle2" fontWeight={600}>
-                      Account Number
+                      Número de cuenta
                     </Typography>
                   </TableCell>
                   <TableCell width="40%">
                     <Typography variant="subtitle2" fontWeight={600}>
-                      Card Number
+                      Número de tarjeta
                     </Typography>
                   </TableCell>
                   <TableCell width="15%">
                     <Typography variant="subtitle2" fontWeight={600}>
-                      Active
+                      Activo
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -520,7 +517,7 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
                             border: selectedCards[index] === 'S' ? 2 : 1,
                             borderColor: selectedCards[index] === 'S' ? 'primary.main' : 'divider',
                           }}
-                          title="View Details (S)"
+                          title="Ver detalles (S)"
                         >
                           <Visibility fontSize="small" />
                         </IconButton>
@@ -532,7 +529,7 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
                             border: selectedCards[index] === 'U' ? 2 : 1,
                             borderColor: selectedCards[index] === 'U' ? 'secondary.main' : 'divider',
                           }}
-                          title="Update Card (U)"
+                          title="Actualizar tarjeta (U)"
                         >
                           <Edit fontSize="small" />
                         </IconButton>
@@ -574,8 +571,8 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
                     <TableCell colSpan={4} sx={{ textAlign: 'center', py: 4 }}>
                       <Typography color="text.secondary">
                         {searchForm.accountId || searchForm.cardNumber 
-                          ? 'No records found for this search condition'
-                          : 'Enter search criteria and click Search to find credit cards'
+                          ? 'No se encontraron registros para esta condición de búsqueda'
+                          : 'Ingrese los criterios de búsqueda y haga clic en Buscar para encontrar tarjetas de crédito'
                         }
                       </Typography>
                     </TableCell>
@@ -597,7 +594,7 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
               <Grid item>
                 {Object.keys(selectedCards).length === 0 ? (
                   <Typography variant="body2" color="text.secondary">
-                    TYPE S FOR DETAIL, U TO UPDATE ANY RECORD
+                    Presiona S para ver detalles, U para actualizar cualquier registro
                   </Typography>
                 ) : (
                   <Button
@@ -606,7 +603,7 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
                     disabled={loading}
                     sx={{ borderRadius: 2 }}
                   >
-                    ENTER = Continue
+                    ENTER = Continuar
                   </Button>
                 )}
               </Grid>
@@ -615,7 +612,7 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
                 <Stack direction="row" spacing={1} alignItems="center">
                   {totalElements > 0 && (
                     <Typography variant="body2" color="text.secondary">
-                      {totalElements} records found
+                      {totalElements} registros encontrados
                     </Typography>
                   )}
                   
@@ -627,7 +624,7 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
                     disabled={!canGoPrev || loading}
                     sx={{ borderRadius: 2 }}
                   >
-                    F7 = Backward
+                    F7 = atrás
                   </Button>
                   
                   <Button
@@ -638,7 +635,7 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
                     disabled={!canGoNext || loading}
                     sx={{ borderRadius: 2 }}
                   >
-                    F8 = Forward
+                    F8 = adelante
                   </Button>
                   
                   <Button
@@ -649,7 +646,7 @@ export function CreditCardListScreen({ onExit }: CreditCardListScreenProps) {
                     disabled={loading}
                     sx={{ borderRadius: 2 }}
                   >
-                    F3 = Exit
+                    F3 = salir
                   </Button>
                 </Stack>
               </Grid>
