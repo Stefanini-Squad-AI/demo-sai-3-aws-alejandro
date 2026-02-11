@@ -85,12 +85,12 @@ export function AccountViewScreen({
     event.preventDefault();
     
     if (!accountId.trim()) {
-      setFieldError('Account number not provided');
+      setFieldError('No se proporcionó el número de cuenta');
       return;
     }
-    
+
     if (accountId.length !== 11 || accountId === '00000000000') {
-      setFieldError('Account number must be a non zero 11 digit number');
+      setFieldError('El número de cuenta debe tener 11 dígitos y no puede ser todo ceros');
       return;
     }
     
@@ -162,9 +162,9 @@ export function AccountViewScreen({
 
   const getStatusLabel = (status?: string) => {
     switch (status) {
-      case 'Y': return 'Active';
-      case 'N': return 'Inactive';
-      default: return 'Unknown';
+      case 'Y': return 'Activo';
+      case 'N': return 'Inactivo';
+      default: return 'Desconocido';
     }
   };
 
@@ -179,8 +179,8 @@ export function AccountViewScreen({
         <SystemHeader
           transactionId="CAVW"
           programName="COACTVWC"
-          title="CardDemo - Account Viewer"
-          subtitle="View Account Details"
+          title="CardDemo - Visor de cuentas"
+          subtitle="Ver detalles de cuenta"
         />
 
         <Paper
@@ -201,7 +201,7 @@ export function AccountViewScreen({
           >
             <Typography variant="h5" fontWeight={600}>
               <AccountBalance sx={{ mr: 1, verticalAlign: 'middle' }} />
-              View Account
+              Ver cuenta
             </Typography>
           </Box>
 
@@ -223,7 +223,7 @@ export function AccountViewScreen({
                 color="primary.main"
                 fontWeight={600}
               >
-                Account Number:
+                Número de cuenta:
               </Typography>
               
               <TextField
@@ -270,7 +270,7 @@ export function AccountViewScreen({
                   fontWeight: 600,
                 }}
               >
-                {loading ? 'Searching...' : 'Search'}
+                {loading ? 'Buscando...' : 'Buscar'}
               </Button>
             </Box>
 
@@ -283,7 +283,7 @@ export function AccountViewScreen({
                   onClick={() => setShowTestAccounts(!showTestAccounts)}
                   sx={{ borderRadius: 2 }}
                 >
-                  {showTestAccounts ? 'Hide' : 'Show'} Test Accounts
+                  {showTestAccounts ? 'Ocultar cuentas de prueba' : 'Mostrar cuentas de prueba'}
                 </Button>
               </Box>
             )}
@@ -299,7 +299,7 @@ export function AccountViewScreen({
                 }}
               >
                 <Typography variant="subtitle2" gutterBottom color="info.main" fontWeight={600}>
-                  Test Accounts (Development Only)
+                  Cuentas de prueba (solo en desarrollo)
                 </Typography>
                 <Grid container spacing={1}>
                   {testAccounts.map((account) => (
@@ -343,7 +343,7 @@ export function AccountViewScreen({
                 />
                 {data.groupId && (
                   <Chip
-                    label={`${data.groupId} Member`}
+                    label={`Miembro del grupo ${data.groupId}`}
                     variant="outlined"
                     color="primary"
                     sx={{ fontWeight: 600 }}
@@ -380,7 +380,7 @@ export function AccountViewScreen({
                     onClick={() => setShowSensitiveData(!showSensitiveData)}
                     sx={{ borderRadius: 2 }}
                   >
-                    {showSensitiveData ? 'Hide' : 'Show'} Sensitive Data
+                    {showSensitiveData ? 'Ocultar datos sensibles' : 'Mostrar datos sensibles'}
                   </Button>
                 </Box>
 
@@ -390,7 +390,7 @@ export function AccountViewScreen({
                       <CardContent>
                         <Typography variant="h6" gutterBottom color="primary.main">
                           <AccountBalance sx={{ mr: 1, verticalAlign: 'middle' }} />
-                          Account Information
+                          Información de la cuenta
                         </Typography>
                         <Divider sx={{ mb: 2 }} />
                         
@@ -398,7 +398,7 @@ export function AccountViewScreen({
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                               <CalendarToday sx={{ fontSize: 16, mr: 0.5 }} />
-                              Opened:
+                              Apertura:
                             </Typography>
                             <Typography variant="body1" fontWeight={500}>
                               {formatDate(data.openDate)}
@@ -408,7 +408,7 @@ export function AccountViewScreen({
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                               <CalendarToday sx={{ fontSize: 16, mr: 0.5 }} />
-                              Expiry:
+                              Vencimiento:
                             </Typography>
                             <Typography variant="body1" fontWeight={500}>
                               {formatDate(data.expirationDate)}
@@ -418,7 +418,7 @@ export function AccountViewScreen({
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                               <CalendarToday sx={{ fontSize: 16, mr: 0.5 }} />
-                              Reissue:
+                              Reemisión:
                             </Typography>
                             <Typography variant="body1" fontWeight={500}>
                               {formatDate(data.reissueDate)}
@@ -428,7 +428,7 @@ export function AccountViewScreen({
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                               <Badge sx={{ fontSize: 16, mr: 0.5 }} />
-                              Account Group:
+                              Grupo de cuenta:
                             </Typography>
                             <Typography variant="body1" fontWeight={500}>
                               {data.groupId || 'N/A'}
@@ -438,7 +438,7 @@ export function AccountViewScreen({
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                               <CreditCard sx={{ fontSize: 16, mr: 0.5 }} />
-                              Card Number:
+                              Número de tarjeta:
                             </Typography>
                             <Typography variant="body1" fontWeight={500} sx={{ fontFamily: 'monospace' }}>
                               {formatCardNumber(data.cardNumber)}
@@ -454,7 +454,7 @@ export function AccountViewScreen({
                       <CardContent>
                         <Typography variant="h6" gutterBottom color="primary.main">
                           <AttachMoney sx={{ mr: 1, verticalAlign: 'middle' }} />
-                          Financial Information
+                          Información financiera
                         </Typography>
                         <Divider sx={{ mb: 2 }} />
                         
@@ -462,7 +462,7 @@ export function AccountViewScreen({
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                               <AccountBalanceWallet sx={{ fontSize: 16, mr: 0.5 }} />
-                              Credit Limit:
+                              Límite de crédito:
                             </Typography>
                             <Typography variant="h6" fontWeight={600} color="success.main">
                               {formatCurrency(data.creditLimit)}
@@ -472,7 +472,7 @@ export function AccountViewScreen({
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                               <AccountBalanceWallet sx={{ fontSize: 16, mr: 0.5 }} />
-                              Cash Credit Limit:
+                              Límite de crédito en efectivo:
                             </Typography>
                             <Typography variant="body1" fontWeight={500} color="info.main">
                               {formatCurrency(data.cashCreditLimit)}
@@ -482,7 +482,7 @@ export function AccountViewScreen({
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                               <TrendingUp sx={{ fontSize: 16, mr: 0.5 }} />
-                              Current Balance:
+                              Saldo actual:
                             </Typography>
                             <Typography 
                               variant="h6" 
@@ -498,7 +498,7 @@ export function AccountViewScreen({
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                               <TrendingUp sx={{ fontSize: 16, mr: 0.5 }} />
-                              Current Cycle Credit:
+                              Crédito del ciclo actual:
                             </Typography>
                             <Typography variant="body1" fontWeight={500} color="success.main">
                               {formatCurrency(data.currentCycleCredit)}
@@ -508,7 +508,7 @@ export function AccountViewScreen({
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                               <TrendingDown sx={{ fontSize: 16, mr: 0.5 }} />
-                              Current Cycle Debit:
+                              Débito del ciclo actual:
                             </Typography>
                             <Typography variant="body1" fontWeight={500} color="error.main">
                               {formatCurrency(data.currentCycleDebit)}
@@ -524,7 +524,7 @@ export function AccountViewScreen({
                       <CardContent>
                         <Typography variant="h6" gutterBottom color="primary.main">
                           <Person sx={{ mr: 1, verticalAlign: 'middle' }} />
-                          Customer Overview
+                          Resumen del cliente
                         </Typography>
                         <Divider sx={{ mb: 2 }} />
                         
@@ -532,7 +532,7 @@ export function AccountViewScreen({
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                               <Badge sx={{ fontSize: 16, mr: 0.5 }} />
-                              Customer ID:
+                              ID del cliente:
                             </Typography>
                             <Typography variant="body1" fontWeight={500}>
                               {data.customerId}
@@ -552,7 +552,7 @@ export function AccountViewScreen({
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                               <CalendarToday sx={{ fontSize: 16, mr: 0.5 }} />
-                              Date of Birth:
+                              Fecha de nacimiento:
                             </Typography>
                             <Typography variant="body1" fontWeight={500}>
                               {formatDate(data.dateOfBirth)}
@@ -562,7 +562,7 @@ export function AccountViewScreen({
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                               <CreditScore sx={{ fontSize: 16, mr: 0.5 }} />
-                              FICO Score:
+                              Puntaje FICO:
                             </Typography>
                             <Chip
                               label={data.ficoScore}
@@ -577,10 +577,10 @@ export function AccountViewScreen({
                           
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                              Primary Card Holder:
+                              Titular principal:
                             </Typography>
                             <Chip
-                              label={data.primaryCardHolderFlag === 'Y' ? 'Yes' : 'No'}
+                              label={data.primaryCardHolderFlag === 'Y' ? 'Sí' : 'No'}
                               color={data.primaryCardHolderFlag === 'Y' ? 'success' : 'default'}
                               size="small"
                               variant="outlined"
@@ -596,14 +596,14 @@ export function AccountViewScreen({
                       <CardContent>
                         <Typography variant="h6" gutterBottom color="primary.main">
                           <ContactPhone sx={{ mr: 1, verticalAlign: 'middle' }} />
-                          Contact & Personal Information
+                          Información de contacto y personal
                         </Typography>
                         <Divider sx={{ mb: 3 }} />
                         
                         <Grid container spacing={3}>
                           <Grid item xs={12} md={4}>
                             <Typography variant="subtitle2" gutterBottom color="text.secondary">
-                              Full Name
+                              Nombre completo
                             </Typography>
                             <Typography variant="h6" fontWeight={500}>
                               {[data.firstName, data.middleName, data.lastName]
@@ -617,7 +617,7 @@ export function AccountViewScreen({
                               <Box>
                                 <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                                   <Phone sx={{ fontSize: 16, mr: 0.5 }} />
-                                  Phone 1:
+                                  Teléfono 1:
                                 </Typography>
                                 <Typography variant="body1" fontWeight={500}>
                                   {data.phoneNumber1 || 'N/A'}
@@ -627,7 +627,7 @@ export function AccountViewScreen({
                               <Box>
                                 <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                                   <Phone sx={{ fontSize: 16, mr: 0.5 }} />
-                                  Phone 2:
+                                  Teléfono 2:
                                 </Typography>
                                 <Typography variant="body1" fontWeight={500}>
                                   {data.phoneNumber2 || 'N/A'}
@@ -640,7 +640,7 @@ export function AccountViewScreen({
                             <Stack spacing={1.5}>
                               <Box>
                                 <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                                  Government ID:
+                                  Identificación gubernamental:
                                 </Typography>
                                 <Typography variant="body1" fontWeight={500}>
                                   {data.governmentId || 'N/A'}
@@ -649,7 +649,7 @@ export function AccountViewScreen({
                               
                               <Box>
                                 <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                                  EFT Account ID:
+                                  ID de cuenta EFT:
                                 </Typography>
                                 <Typography variant="body1" fontWeight={500}>
                                   {data.eftAccountId || 'N/A'}
@@ -662,12 +662,12 @@ export function AccountViewScreen({
                         <Divider sx={{ my: 3 }} />
                         <Typography variant="subtitle2" gutterBottom color="text.secondary">
                           <Home sx={{ fontSize: 16, mr: 0.5, verticalAlign: 'middle' }} />
-                          Address
+                          Dirección
                         </Typography>
                         <Grid container spacing={2}>
                           <Grid item xs={12} md={6}>
                             <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                              Street Address:
+                              Dirección:
                             </Typography>
                             <Typography variant="body1" fontWeight={500}>
                               {data.addressLine1}
@@ -681,7 +681,7 @@ export function AccountViewScreen({
                           
                           <Grid item xs={12} md={6}>
                             <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                              City:
+                              Ciudad:
                             </Typography>
                             <Typography variant="body1" fontWeight={500}>
                               {data.city || 'N/A'}
@@ -690,7 +690,7 @@ export function AccountViewScreen({
                           
                           <Grid item xs={12} md={6}>
                             <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                              State:
+                              Estado:
                             </Typography>
                             <Typography variant="body1" fontWeight={500}>
                               {data.state || 'N/A'}
@@ -699,7 +699,7 @@ export function AccountViewScreen({
                           
                           <Grid item xs={12} md={6}>
                             <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                              ZIP Code:
+                              Código postal:
                             </Typography>
                             <Typography variant="body1" fontWeight={500}>
                               {data.zipCode || 'N/A'}
@@ -708,7 +708,7 @@ export function AccountViewScreen({
                           
                           <Grid item xs={12} md={6}>
                             <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                              Country:
+                              País:
                             </Typography>
                             <Typography variant="body1" fontWeight={500}>
                               {data.country || 'N/A'}
@@ -739,7 +739,7 @@ export function AccountViewScreen({
             >
               <Typography variant="body2" color="text.secondary">
                 <KeyboardReturn sx={{ fontSize: 16, mr: 0.5, verticalAlign: 'middle' }} />
-                ENTER = Search
+                ENTER = Buscar
               </Typography>
               
               <Button
@@ -750,7 +750,7 @@ export function AccountViewScreen({
                 disabled={loading}
                 sx={{ borderRadius: 2 }}
               >
-                F3 = Exit
+                F3 = Salir
               </Button>
             </Stack>
           </Box>
