@@ -237,11 +237,26 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
 
   const getStatusLabel = (status?: string) => {
     switch (status) {
-      case 'ACTIVE': return 'Active';
-      case 'INACTIVE': return 'Inactive';
-      case 'BLOCKED': return 'Blocked';
-      case 'EXPIRED': return 'Expired';
-      default: return 'Unknown';
+      case 'ACTIVE': return 'Activo';
+      case 'INACTIVE': return 'Inactivo';
+      case 'BLOCKED': return 'Bloqueada';
+      case 'EXPIRED': return 'Expirada';
+      default: return 'Desconocido';
+    }
+  };
+
+  const getExpiryStatusLabel = (status?: string) => (
+    status === 'EXPIRED' ? 'Expirada' : 'Válida'
+  );
+
+  const getTestStatusLabel = (status: string) => {
+    const normalized = status.toUpperCase();
+    switch (normalized) {
+      case 'ACTIVE': return 'Activo';
+      case 'INACTIVE': return 'Inactivo';
+      case 'BLOCKED': return 'Bloqueada';
+      case 'EXPIRED': return 'Expirada';
+      default: return 'Desconocido';
     }
   };
 
@@ -257,11 +272,11 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
 
   // ✅ NUEVO: Función para obtener color de estado de prueba
   const getTestStatusColor = (status: string) => {
-    switch (status) {
-      case 'Active': return 'success';
-      case 'Inactive': return 'default';
-      case 'Expired': return 'warning';
-      case 'Blocked': return 'error';
+    switch (status.toUpperCase()) {
+      case 'ACTIVE': return 'success';
+      case 'INACTIVE': return 'default';
+      case 'EXPIRED': return 'warning';
+      case 'BLOCKED': return 'error';
       default: return 'default';
     }
   };
@@ -281,7 +296,7 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
         <SystemHeader
           transactionId="CCDL"
           programName="COCRDSLC"
-          title="View Credit Card Detail"
+          title="Detalle de tarjetas"
         />
 
         <Paper
@@ -301,10 +316,10 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
               color: 'white',
             }}
           >
-            <Typography variant="h5" fontWeight={600}>
-              <CreditCard sx={{ mr: 1, verticalAlign: 'middle' }} />
-              View Credit Card Detail
-            </Typography>
+          <Typography variant="h5" fontWeight={600}>
+            <CreditCard sx={{ mr: 1, verticalAlign: 'middle' }} />
+            Detalles de la tarjeta
+          </Typography>
           </Box>
 
           {/* Formulario de búsqueda */}
@@ -317,11 +332,11 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
               <Grid container spacing={3} alignItems="flex-end">
                 <Grid item xs={12} md={5}>
                   <TextField
-                    label="Account Number"
+                    label="Número de cuenta"
                     value={searchForm.accountId}
                     onChange={handleInputChange('accountId')}
                     error={!!validationErrors.accountId}
-                    helperText={validationErrors.accountId || '11 digits required'}
+                    helperText={validationErrors.accountId || 'Se requieren 11 dígitos'}
                     disabled={loading || isFromList}
                     fullWidth
                     inputProps={{
@@ -350,11 +365,11 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
 
                 <Grid item xs={12} md={5}>
                   <TextField
-                    label="Card Number"
+                    label="Número de tarjeta"
                     value={searchForm.cardNumber}
                     onChange={handleInputChange('cardNumber')}
                     error={!!validationErrors.cardNumber}
-                    helperText={validationErrors.cardNumber || '16 digits required'}
+                    helperText={validationErrors.cardNumber || 'Se requieren 16 dígitos'}
                     disabled={loading || isFromList}
                     fullWidth
                     inputProps={{
@@ -388,14 +403,14 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
                     fullWidth
                     sx={{ borderRadius: 2, py: 1.5 }}
                   >
-                    {loading ? 'Searching...' : 'Search'}
+                  {loading ? 'Buscando...' : 'Buscar'}
                   </Button>
                 </Grid>
               </Grid>
 
               {isFromList && (
                 <Alert severity="info" sx={{ mt: 2, borderRadius: 2 }}>
-                  Search criteria populated from card selection. Data loaded automatically.
+                  Los criterios de búsqueda se completaron desde la tarjeta seleccionada. Datos cargados automáticamente.
                 </Alert>
               )}
             </Box>
@@ -410,7 +425,7 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
                   onClick={() => setShowTestData(!showTestData)}
                   sx={{ borderRadius: 2 }}
                 >
-                  {showTestData ? 'Hide' : 'Show'} Test Data
+                  {showTestData ? 'Ocultar datos de prueba' : 'Mostrar datos de prueba'}
                 </Button>
               </Box>
             )}
@@ -427,10 +442,10 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
                 }}
               >
                 <Typography variant="subtitle2" gutterBottom color="info.main" fontWeight={600}>
-                  Test Credit Cards (Development Only)
+                  Tarjetas de prueba (solo para desarrollo)
                 </Typography>
                 <Typography variant="caption" color="text.secondary" sx={{ mb: 2, display: 'block' }}>
-                  Click on any card to view its details
+                  Seleccione una tarjeta para ver sus detalles
                 </Typography>
                 
                 <Grid container spacing={1}>
@@ -457,10 +472,10 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
                           <Grid item xs={12} sm={4}>
                             <Stack spacing={0.5}>
                               <Typography variant="body2" fontWeight={600} color="primary.main">
-                                Account: {item.accountId}
+                                Cuenta: {item.accountId}
                               </Typography>
                               <Typography variant="body2" fontWeight={600} color="secondary.main" sx={{ fontFamily: 'monospace' }}>
-                                Card: {item.cardNumber}
+                                Tarjeta: {item.cardNumber}
                               </Typography>
                             </Stack>
                           </Grid>
@@ -470,13 +485,13 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
                               {item.description}
                             </Typography>
                             <Typography variant="caption" color="text.secondary">
-                              Holder: {item.holderName}
+                              Titular: {item.holderName}
                             </Typography>
                           </Grid>
                           
                           <Grid item xs={12} sm={3}>
                             <Chip
-                              label={item.status}
+                              label={getTestStatusLabel(item.status)}
                               size="small"
                               color={getTestStatusColor(item.status) as any}
                               variant="outlined"
@@ -491,11 +506,11 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
                 {/* Instrucciones adicionales */}
                 <Box sx={{ mt: 2, p: 2, bgcolor: alpha(theme.palette.warning.main, 0.1), borderRadius: 1 }}>
                   <Typography variant="caption" color="text.secondary">
-                    <strong>Testing Tips:</strong><br />
-                    • Each test card has different status and expiry dates<br />
-                    • Use these cards to test various scenarios<br />
-                    • All test data is for development purposes only<br />
-                    • Real production data will have different validation rules
+                    <strong>Consejos de prueba:</strong><br />
+                    • Cada tarjeta de prueba tiene distintos estados y fechas de vencimiento<br />
+                    • Use estas tarjetas para validar varios escenarios<br />
+                    • Los datos mostrados son únicamente para desarrollo<br />
+                    • Los datos de producción reales tienen reglas de validación distintas
                   </Typography>
                 </Box>
               </Paper>
@@ -513,7 +528,7 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
                     onClick={handleRetry}
                     disabled={loading}
                   >
-                    Retry
+                    Reintentar
                   </Button>
                 }
               >
@@ -531,7 +546,7 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
             {/* Mensaje informativo cuando no hay datos */}
             {!data && !loading && !error && (
               <Alert severity="info" sx={{ mb: 3, borderRadius: 2 }}>
-                Please enter Account and Card Number
+                Ingrese número de cuenta y número de tarjeta
               </Alert>
             )}
 
@@ -551,14 +566,14 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
                       <CardContent>
                         <Typography variant="h6" gutterBottom color="primary.main">
                           <CreditCard sx={{ mr: 1, verticalAlign: 'middle' }} />
-                          Card Information
+                          Información de la tarjeta
                         </Typography>
                         <Divider sx={{ mb: 2 }} />
                         
                         <Stack spacing={2.5}>
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                              Account Number:
+                              Número de cuenta:
                             </Typography>
                             <Typography variant="h6" fontFamily="monospace" fontWeight={600}>
                               {data.accountId.toString().padStart(11, '0')}
@@ -567,7 +582,7 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
 
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                              Card Number:
+                              Número de tarjeta:
                             </Typography>
                             <Typography variant="h6" fontFamily="monospace" fontWeight={600}>
                               {data.cardNumber}
@@ -576,7 +591,7 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
 
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                              Card Active:
+                              Estado de la tarjeta:
                             </Typography>
                             <Chip
                               label={getStatusLabel(data.activeStatus)}
@@ -597,14 +612,14 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
                       <CardContent>
                         <Typography variant="h6" gutterBottom color="primary.main">
                           <Person sx={{ mr: 1, verticalAlign: 'middle' }} />
-                          Cardholder Details
+                          Detalles del titular
                         </Typography>
                         <Divider sx={{ mb: 2 }} />
                         
                         <Stack spacing={2.5}>
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                              Name on Card:
+                              Nombre en la tarjeta:
                             </Typography>
                             <Typography variant="h6" fontWeight={500}>
                               {data.embossedName || 'N/A'}
@@ -614,7 +629,7 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
                           <Box>
                             <Typography variant="body2" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', mb: 0.5 }}>
                               <CalendarToday sx={{ fontSize: 16, mr: 0.5 }} />
-                              Expiry Date:
+                              Fecha de vencimiento:
                             </Typography>
                             <Typography variant="h6" fontWeight={500} sx={{ fontFamily: 'monospace' }}>
                               {expiryDate.month && expiryDate.year 
@@ -627,7 +642,7 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
                           {data.cvvCode && (
                             <Box>
                               <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                                CVV Code:
+                              Código CVV:
                               </Typography>
                               <Typography variant="body1" fontFamily="monospace" fontWeight={500}>
                                 ***
@@ -644,7 +659,7 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
                     <Card elevation={1}>
                       <CardContent>
                         <Typography variant="h6" gutterBottom color="primary.main">
-                          Security Information
+                          Información de seguridad
                         </Typography>
                         <Divider sx={{ mb: 2 }} />
                         
@@ -652,7 +667,7 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
                           <Grid item xs={12} sm={4}>
                             <Box sx={{ textAlign: 'center', p: 2 }}>
                               <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                Card Status
+                                Estado de la tarjeta
                               </Typography>
                               <Chip
                                 label={getStatusLabel(data.activeStatus)}
@@ -674,14 +689,10 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
                           <Grid item xs={12} sm={4}>
                             <Box sx={{ textAlign: 'center', p: 2 }}>
                               <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                Expiry Status
+                                Estado de vencimiento
                               </Typography>
                               <Chip
-                                label={
-                                  data.activeStatus === 'EXPIRED' 
-                                    ? 'Expired' 
-                                    : 'Valid'
-                                }
+                                label={getExpiryStatusLabel(data.activeStatus)}
                                 color={
                                   data.activeStatus === 'EXPIRED' 
                                     ? 'error' 
@@ -696,7 +707,7 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
                           <Grid item xs={12} sm={4}>
                             <Box sx={{ textAlign: 'center', p: 2 }}>
                               <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                                Security Code
+                                Código de seguridad
                               </Typography>
                               <Typography variant="h6" fontFamily="monospace" color="text.primary">
                                 {data.cvvCode ? '***' : 'N/A'}
@@ -729,7 +740,7 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
             >
               <Typography variant="body2" color="text.secondary">
                 <KeyboardReturn sx={{ fontSize: 16, mr: 0.5, verticalAlign: 'middle' }} />
-                ENTER = Search Cards
+                ENTER = Buscar tarjetas
               </Typography>
               
               <Button
@@ -739,8 +750,8 @@ export function CreditCardDetailScreen({ onExit }: CreditCardDetailScreenProps) 
                 onClick={onExit || handleExit}
                 disabled={loading}
                 sx={{ borderRadius: 2 }}
-              >
-                F3 = Exit
+                >
+                F3 = Salir
               </Button>
             </Stack>
           </Box>
