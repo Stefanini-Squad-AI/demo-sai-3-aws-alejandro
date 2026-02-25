@@ -97,15 +97,15 @@ export default function LoginPage() {
     const errors: Record<string, string> = {};
     
     if (!formData.userId.trim()) {
-      errors.userId = 'Por favor ingrese su ID de usuario.';
+      errors.userId = 'Por favor, insira seu ID de usuário.';
     } else if (formData.userId.length > 8) {
-      errors.userId = 'El ID de usuario debe tener como máximo 8 caracteres.';
+      errors.userId = 'O ID de usuário deve ter no máximo 8 caracteres.';
     }
 
     if (!formData.password.trim()) {
-      errors.password = 'Por favor ingrese su contraseña.';
+      errors.password = 'Por favor, insira sua senha.';
     } else if (formData.password.length > 8) {
-      errors.password = 'La contraseña debe tener como máximo 8 caracteres.';
+      errors.password = 'A senha deve ter no máximo 8 caracteres.';
     }
     
     setFieldErrors(errors);
@@ -150,7 +150,7 @@ export default function LoginPage() {
   const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
       if (event.key === 'F3' || event.key === 'Escape') {
         event.preventDefault();
-        if (window.confirm('¿Está seguro de que desea salir del sistema?')) {
+        if (window.confirm('Tem certeza de que deseja sair do sistema?')) {
           window.close();
         }
       }
@@ -162,10 +162,10 @@ export default function LoginPage() {
 
   const getErrorMessage = (error: string) => {
     const errorMappings: Record<string, string> = {
-    'Invalid credentials': 'Credenciales incorrectas. Intente nuevamente.',
-    'User not found': 'Usuario no encontrado. Verifique su ID.',
-    'Please check your input': 'Verifique su ID de usuario y contraseña.',
-    'Network error occurred': 'No se pudieron verificar las credenciales. Revise su conexión.',
+    'Invalid credentials': 'Credenciais incorretas. Tente novamente.',
+    'User not found': 'Usuário não encontrado. Verifique seu ID.',
+    'Please check your input': 'Verifique seu ID de usuário e senha.',
+    'Network error occurred': 'Não foi possível verificar as credenciais. Verifique sua conexão.',
     };
    
     return errorMappings[error] || error;
@@ -209,7 +209,7 @@ export default function LoginPage() {
               zIndex: 10,
             }}
           >
-            <Tooltip title="Ver documentación" arrow>
+            <Tooltip title="Ver documentação" arrow>
               <IconButton
                 onClick={handleOpenDocs}
                 size="small"
@@ -296,7 +296,7 @@ export default function LoginPage() {
               gutterBottom
               sx={{ mb: 3 }}
             >
-              Ingrese su ID de usuario y contraseña, luego presione ENTER:
+              Insira seu ID de usuário e senha e pressione ENTER:
             </Typography>
 
             <Box
@@ -306,7 +306,7 @@ export default function LoginPage() {
             >
               <Stack spacing={3}>
                 <TextField
-                  label="ID de usuario"
+                  label="ID de usuário"
                   value={formData.userId}
                   onChange={handleInputChange('userId')}
                   error={!!fieldErrors.userId}
@@ -332,7 +332,7 @@ export default function LoginPage() {
                 />
 
                 <TextField
-                  label="Contraseña"
+                  label="Senha"
                   type={showPassword ? 'text' : 'password'}
                   value={formData.password}
                   onChange={handleInputChange('password')}
@@ -384,7 +384,7 @@ export default function LoginPage() {
                         severity="error"
                         sx={{ borderRadius: 2 }}
                       >
-                        Corrija los errores anteriores.
+                        Corrija os erros acima.
                       </Alert>
                     )}
                   </>
@@ -417,7 +417,7 @@ export default function LoginPage() {
                     },
                   }}
                 >
-                  {isLoading ? 'Iniciando sesión...' : 'ENTER = Iniciar sesión'}
+                  {isLoading ? 'Iniciando sessão...' : 'ENTER = Iniciar sessão'}
                 </Button>
               </Stack>
             </Box>
@@ -426,7 +426,7 @@ export default function LoginPage() {
 
             <Box sx={{ textAlign: 'center' }}>
               <Typography variant="body2" color="text.secondary" gutterBottom>
-                Credenciales de muestra:
+                Credenciais de exemplo:
               </Typography>
               <Stack direction="row" spacing={2} justifyContent="center" flexWrap="wrap">
                 <Typography variant="caption" sx={{ 
@@ -436,7 +436,7 @@ export default function LoginPage() {
                   py: 0.5,
                   borderRadius: 1,
                 }}>
-                  Administrador: ADMIN001 / CONTRASEÑA
+                  Administrador: ADMIN001 / SENHA
                 </Typography>
                 <Typography variant="caption" sx={{ 
                   bgcolor: 'success.main', 
@@ -445,7 +445,7 @@ export default function LoginPage() {
                   py: 0.5,
                   borderRadius: 1,
                 }}>
-                  Back-Office: USER001 / CONTRASEÑA
+                  Back-Office: USER001 / SENHA
                 </Typography>
               </Stack>
             </Box>
@@ -460,7 +460,7 @@ export default function LoginPage() {
             }}
           >
             <Typography variant="body2" color="text.secondary">
-              ENTER = Iniciar sesión • F3 = Salir
+              ENTER = Iniciar sessão • F3 = Sair
             </Typography>
           </Box>
         </Paper>
