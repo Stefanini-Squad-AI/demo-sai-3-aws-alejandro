@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRANSACTION - Guía Operacional para Historias de Usuario</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f4f6fb;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #f97316 0%, #c2410c 100%);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .header a {
+            color: #ffe082;
+            text-decoration: underline;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .section h2 {
+            color: #f97316;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .section h3 {
+            color: #444;
+            margin-bottom: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .card {
+            border: 2px solid #fbd38d;
+            border-radius: 8px;
+            padding: 1.5rem;
+            background: #fff7ed;
+            min-height: 180px;
+        }
+
+        .card h4 {
+            color: #b45309;
+            margin-bottom: 0.5rem;
+        }
+
+        .section ul {
+            margin-top: 1rem;
+            list-style: none;
+            padding-left: 1rem;
+        }
+
+        .section ul li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .section ul li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #f97316;
+            font-weight: 700;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-size: 0.9rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #f97316;
+            color: white;
+            font-weight: 600;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+
+        footer a {
+            color: #f97316;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .complexity {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: #fff1de;
+            border: 1px solid #fcd34d;
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.8rem;
+            border-radius: 999px;
+            background: #fefce8;
+            border: 1px solid #fcd34d;
+            color: #92400e;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>💸 TRANSACTION - Guía Operacional</h1>
+        <p>Registro, búsqueda y reportes con las reglas de validación del backend heredado, atajos de teclado (F3/F5/F7/F8) y el componente <strong>SystemHeader</strong> como marco.</p>
+        <p style="margin-top: 0.75rem;">
+            <strong>Documentación extendida:</strong>
+            <a href="../../../modules/transaction/transaction-overview.md">docs/modules/transaction/transaction-overview.md</a>
+        </p>
+    </header>
+
+    <div class="container">
+        <section class="section">
+            <h2>📋 Visión general del módulo</h2>
+            <p>
+                TRANSACTION coordina cuatro pantallas protegidas (alta, listados paginados, vista detallada y reportes) que comparten hooks especializados y validaciones replicadas del flujo legacy. Los usuarios confían en una confirmación explícita Y/N antes de enviar transacciones o reportes y envían acciones con atajos heredados.
+            </p>
+            <ul>
+                <li>Alta dual-step con verificación de merchant, tipo/categoría y límite en ±99,999,999.99 previo a <code>POST /api/transactions</code>.</li>
+                <li>Lista paginada que mantiene <code>firstTransactionId</code>, <code>lastTransactionId</code> y permite selección con la tecla <strong>S</strong> antes de navegar al detalle.</li>
+                <li>Vista de transacción que limpia con <code>POST /api/transaction/clear</code> y muestra header + datos del merchant/monto/timestamps.</li>
+                <li>Reportes mensual/anual/custom con confirmación y descarga simulada (.txt) mostrando <code>accountGroups</code>.</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>🎯 Guía de desarrollo de Historias de Usuario</h2>
+            <h3>📝 Plantillas específicas</h3>
+            <ul>
+                <li><strong>Operador Back-office:</strong> Como operador, quiero registrar manualmente una transacción identificando account/card, monto y merchant para corregir un ajuste legado antes de cerrar el ciclo.</li>
+                <li><strong>Supervisor de auditoría:</strong> Como auditor, quiero buscar un Transaction ID numérico, navegar con F7/F8 y seleccionar la fila con <strong>S</strong> para revisar los metadatos antes de aprobar el cambio.</li>
+                <li><strong>Analista financiero:</strong> Como analista, quiero generar un reporte custom (inicio/fin) y confirmar con Y para descargar el resumen y compartirlo con legacy.</li>
+            </ul>
+
+            <h3>⚡ Factores de aceleración</h3>
+            <ul>
+                <li><strong>Hooks compartidos:</strong> <code>useTransactionAdd</code>, <code>useTransactionList</code>, <code>useTransactionView</code> y <code>useTransactionReports</code> extienden <code>useMutation</code> y <code>apiClient</code>, por lo que basta con duplicar estados o validaciones puntuales.</li>
+                <li><strong>SystemHeader &amp; atajos:</strong> la envoltura ya expone <strong>transactionId</strong>, <strong>programName</strong> y las teclas F3/F5/F7/F8/ENTER, lo cual mantiene consistencia sin reimplementar.</li>
+                <li><strong>MSW handlers:</strong> `transaction*.ts` simulan errores y validaciones (montos, códigos, confirmación) para pruebas offline.</li>
+            </ul>
+
+            <h3>📊 Guía de complejidad</h3>
+            <ul>
+                <li><span class="complexity">Simple (1-2 pts)</span> Validar y enviar transacciones ya registradas con campos precompletados y confirmación Y.</li>
+                <li><span class="complexity">Media (3-5 pts)</span> Agregar nuevas validaciones de merchant/categoría y mostrar mensajes contextuales antes de la confirmación Y.</li>
+                <li><span class="complexity">Compleja (5-8 pts)</span> Extender los reportes custom con cálculos adicionales, nuevas columnas de <code>accountGroups</code> y la descarga tipo `.txt`.</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2>🔧 Fundamento técnico</h2>
+            <h3>🏗️ Componentes clave</h3>
+            <div class="grid">
+                <div class="card">
+                    <h4>TransactionAddScreen</h4>
+                    <p>Formulario multi-step (datos → revisión) con validaciones de account/card, tipo/categoría, monto y merchant; solicita confirmación Y antes de llamar <code>POST /api/transactions</code>.</p>
+                </div>
+                <div class="card">
+                    <h4>TransactionListScreen</h4>
+                    <p>Tabla paginada con columnas de fecha, descripción y monto; administra campos <code>firstTransactionId</code> y <code>lastTransactionId</code> y respeta atajos F7/F8/S.</p>
+                </div>
+                <div class="card">
+                    <h4>TransactionViewScreen / Reports</h4>
+                    <p>Vista detallada y reportes que limpian el estado con <code>/api/transaction/clear</code>, muestran merchant + timestamps y exponen descarga de reportes (.txt) para legacy.</p>
+                </div>
+            </div>
+
+            <h3>🔗 Dependencias</h3>
+            <ul>
+                <li><strong>SystemHeader:</strong> muestra metadatos de transacción y expone atajos.</li>
+                <li><strong>apiClient + useMutation:</strong> base para todos los hooks (app/services/api.ts y app/hooks/useApi.ts).</li>
+                <li><strong>MSW handlers:</strong> <code>transactionAddHandlers</code>, <code>transactionListHandlers</code>, <code>transactionViewHandlers</code>, <code>transactionReportsHandlers</code> replican validaciones.</li>
+                <li><strong>LoadingSpinner / Alert:</strong> muestran estados de carga y errores en cada pantalla.</li>
+            </ul>
+
+            <h3>🌐 Interfaces públicas</h3>
+            <pre><code>POST /api/transactions            - Alta con account/card, tipo/categoría, monto, merchant y confirmación Y
+POST /api/transactions/list       - Lista inicial y búsquedas (usa transactionId, pageNumber)
+POST /api/transactions/next-page  - Avance (F8) con lastTransactionId
+POST /api/transactions/previous-page - Retroceso (F7) con firstTransactionId
+GET  /api/transaction-view/search - Detalle por Transaction ID (merchant, timestamps, errores)
+POST /api/transaction/clear       - Limpia la vista antes de nueva búsqueda
+POST /api/v1/reports/transactions/monthly - Reporte mensual con confirmación
+POST /api/v1/reports/transactions/yearly  - Reporte anual
+POST /api/v1/reports/transactions/custom  - Reporte custom (startDate, endDate, confirmed)</code></pre>
+        </section>
+
+        <section class="section">
+            <h2>🧾 Criterios de aceptación</h2>
+            <ul>
+                <li>Validación: Si `transactionAmount` tiene texto, el formulario muestra `Amount should be in format -99999999.99` y no llama al backend.</li>
+                <li>Interacción: Presionar F8 en la lista invoca `/transactions/next-page` con el último ID antes de actualizar la tabla.</li>
+                <li>Reporte: Confirmar `Custom + Y` dispara `/v1/reports/transactions/custom` y presenta `accountGroups` más totales.</li>
+            </ul>
+        </section>
+    </div>
+
+    <footer>
+        <p><a href="../index.html">← Volver al índice</a></p>
+        <p><em>Última actualización: 2026-02-25</em></p>
+    </footer>
+</body>
+</html>
