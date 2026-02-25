@@ -2,8 +2,12 @@
 
 **Módulo ID**: `transaction`  
 **Versión**: 1.0  
-**Última actualización**: 2026-02-13  
+**Última actualización**: 2026-02-25  
 **Propósito**: Registrar transacciones manuales, consultar movimientos específicos y generar reportes consolidados con las mismas reglas y metadatos que el backend heredado.
+
+## 🌐 Documentación web
+
+- **Guía extendida del módulo:** `docs/site/modules/transaction/index.html`
 
 ---
 
