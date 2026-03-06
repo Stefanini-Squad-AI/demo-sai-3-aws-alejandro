@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>USER - User Story Development Guide</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f7fafc; color: #1f2933; margin: 0; padding: 0; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 3rem; }
+    .header { background: linear-gradient(135deg, #5f7cfa 0%, #7b4dff 100%); color: white; padding: 2rem 1.5rem; border-radius: 12px; box-shadow: 0 20px 35px rgba(97, 39, 219, 0.2); }
+    .header h1 { margin: 0 0 0.35rem; font-size: 2.2rem; }
+    .section { margin-top: 2rem; background: white; border-radius: 10px; padding: 1.75rem; box-shadow: 0 15px 30px rgba(15, 15, 15, 0.08); }
+    h2 { margin-top: 0; color: #3b82f6; }
+    h3 { margin-bottom: 0.25rem; color: #1f2933; }
+    ul { padding-left: 1rem; }
+    li + li { margin-top: 0.35rem; }
+    pre { background: #0f172a; color: #e2e8f0; padding: 1rem; border-radius: 8px; overflow-x: auto; }
+    a.button { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.65rem 1.1rem; border-radius: 6px; background: #3b82f6; color: white; text-decoration: none; font-weight: 600; margin-top: 1rem; }
+    .tag { display: inline-flex; align-items: center; padding: 0.2rem 0.75rem; border-radius: 999px; font-size: 0.85rem; color: #1e3a8a; background: #e0e7ff; margin-right: 0.4rem; }
+  </style>
+</head>
+<body>
+  <div class='container'>
+    <header class='header'>
+      <h1>👤 USER Module</h1>
+      <p>User Story Development Guide for admin-level user management flows</p>
+    </header>
+
+    <section class='section overview'>
+      <h2>📋 Overview</h2>
+      <p><strong>Purpose:</strong> Provide admins with full control over system users (list, add, update, delete) while preserving the original COBOL-inspired workflow, keyboard shortcuts and audit messaging.</p>
+      <p><strong>Business Context:</strong> Exposed only via the admin menu (`getAdminMenuData`) and guarded by `ProtectedRoute` (role = admin). Critical for compliance workflows that need quick role adjustments, secure creations, and intentional deletions.</p>
+      <p><strong>Screening Notes:</strong> Each page reuses `SystemHeader`, `LoadingSpinner`, `Alert`, and Material-UI controls along with MSW mocks (`/api/users/*`) before switching to the backend real contracts (`/users/*`).</p>
+      <span class='tag'>Last update: March 6, 2026</span>
+    </section>
+
+    <section class='section us-guide'>
+      <h2>🎯 User Story Development Guide</h2>
+
+      <h3>📝 Specific US Templates</h3>
+      <ul>
+        <li><strong>User audits:</strong> As an administrator, I want to list users filtered by ID and quickly select Update/Delete so I can validate privileges before taking action.</li>
+        <li><strong>User provisioning:</strong> As an admin, I want to create a user with an 8-character ID/password and explicit type (A/U) so that access aligns with policy.</li>
+        <li><strong>User lifecycle:</strong> As a compliance officer, I want to fetch a user, edit their role, confirm via F5, and optionally delete them with confirmation so I can keep audit trails clean.</li>
+      </ul>
+
+      <h3>⚡ Development Acceleration Factors</h3>
+      <ul>
+        <li><strong>`useUserList` / `useUserAdd` / `useUserUpdate` / `useUserDelete`:</strong> Encapsulate API calls (`apiClient`, `UserApiAdapter`), loading/error states and keyboard shortcuts, enabling new screens to reuse the same flows.</li>
+        <li><strong>SystemHeader + Alerts:</strong> Consistent UI shell with transaction IDs (CU00—CU03) keeps operations traceable and reduces copy/paste.</li>
+        <li><strong>Material-UI Table + Select:</strong> Selection-based actions reduce custom input logic, and 8-char limits/new validations are enforced inside `handleFieldChange` helpers.</li>
+        <li><strong>MSW Handlers:</strong> `userListHandlers`, `userAddHandlers`, etc., mirror backend responses—ideal for story-driven regression tests.</li>
+      </ul>
+
+      <h3>📊 Complexity Guidelines</h3>
+      <ul>
+        <li><strong>Simple (1-2 pts):</strong> List users with search, pagination (F7/F8) and ENTER=continue selection.</li>
+        <li><strong>Medium (3-5 pts):</strong> Implement Add/Update forms with synchronous validations, inline feedback, and F-key shortcuts (F3 back, F4 clear, F5 save).</li>
+        <li><strong>Complex (5-8 pts):</strong> Coordinate backend adaptors + MSW responses when switching from mocks to production, ensuring flows honor exact-length password rules and deletion confirmations.</li>
+      </ul>
+    </section>
+
+    <section class='section technical'>
+      <h2>🔧 Technical Foundation</h2>
+
+      <h3>🏗️ Key Components</h3>
+      <ul>
+        <li><strong>`UserListScreen.tsx`:</strong> Material-UI table with selection dropdowns, helper alert area, keyboard listener handling ENTER/F3/F7/F8, and pagination chips.</li>
+        <li><strong>`UserAdd/Update/DeleteScreen.tsx`:</strong> Responsive grids, validation helpers, confirmation dialogs, and shared actions hooking into `useUserAdd`, `useUserUpdate`, `useUserDelete`.</li>
+        <li><strong>`SystemHeader` + `LoadingSpinner` + `Alert` components:</strong> Provide consistent UX and state messaging across the module.</li>
+        <li><strong>`UserApiAdapter` + `apiClient`:</strong> Adapt between `/api/users/` mocks and `/users` real endpoints, handle HTTP errors, and keep auth header management centralized.</li>
+      </ul>
+
+      <h3>🔗 Dependencies</h3>
+      <ul>
+        <li><strong>Authentication (Auth module):</strong> Provides role info + `auth-token` for headers.</li>
+        <li><strong>Redux + ProtectedRoute:</strong> Ensures `/admin/users/*` is only accessible to admins.</li>
+        <li><strong>MSW mock servers:</strong> `userListHandlers`, `userAddHandlers`, `userUpdateHandlers`, `userDeleteHandlers` used when `VITE_USE_MOCKS=true`.</li>
+        <li><strong>Material UI 5:</strong> Layout, tables, forms, dialogs, chips, select inputs.</li>
+      </ul>
+
+      <h3>🌐 Public Interfaces</h3>
+      <pre><code>
+GET /users/list?pageNumber={n}&direction=FORWARD&startUserId={id} (backend real)
+GET /users/{userId}
+POST /users
+PUT /users/{userId}
+DELETE /users/{userId}
+
+# During development with MSW
+GET /api/users/security
+POST /api/users/add
+GET /api/users/security/:userId
+PUT /api/users/security/:userId
+DELETE /api/users/security/:userId
+      </code></pre>
+    </section>
+
+    <footer class='section' style='text-align:center;'>
+      <a class='button' href='../index.html'>&larr; Back to Index</a>
+      <p style='margin-top:0.75rem; color:#64748b;'>Maintained by Equipo DS3A · Last update: March 6, 2026</p>
+    </footer>
+  </div>
+</body>
+</html>
