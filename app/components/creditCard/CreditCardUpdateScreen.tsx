@@ -228,6 +228,27 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
     }
   };
 
+  const getStatusLabel = (status?: string) => {
+    switch (status) {
+      case 'ACTIVE':
+      case 'A':
+      case 'Active':
+        return 'Activa';
+      case 'INACTIVE':
+      case 'I':
+      case 'Inactive':
+        return 'Inactiva';
+      case 'BLOCKED':
+      case 'Blocked':
+        return 'Bloqueada';
+      case 'EXPIRED':
+      case 'Expired':
+        return 'Expirada';
+      default:
+        return status || '';
+    }
+  };
+
   const getTestStatusColor = (status: string) => {
     switch (status) {
       case 'Active': return 'success';
@@ -241,17 +262,17 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
   const getInfoMessage = () => {
     switch (updateState.changeAction) {
       case 'NOT_FETCHED':
-        return 'Please enter Account and Card Number';
+        return 'Por favor ingresa el número de cuenta y el número de tarjeta';
       case 'SHOW_DETAILS':
-        return 'Update card details presented above.';
+        return 'Los detalles de la tarjeta se muestran arriba.';
       case 'CHANGES_NOT_OK':
-        return 'Please correct the errors and try again.';
+        return 'Corrige los errores e intenta nuevamente.';
       case 'CHANGES_OK_NOT_CONFIRMED':
-        return 'Changes validated. Press F5 to save';
+        return 'Cambios validados. Presiona F5 para guardar.';
       case 'CHANGES_OKAYED_AND_DONE':
-        return 'Changes committed to database';
+        return 'Cambios registrados en la base de datos.';
       case 'CHANGES_FAILED':
-        return 'Changes unsuccessful. Please try again';
+        return 'Los cambios no se guardaron. Intenta otra vez.';
       default:
         return '';
     }
@@ -272,7 +293,7 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
         <SystemHeader
           transactionId="CCUP"
           programName="COCRDUPC"
-          title="Update Credit Card Details"
+          title="Actualizar detalles de tarjeta de crédito"
         />
 
         <Paper
@@ -294,7 +315,7 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
           >
             <Typography variant="h5" fontWeight={600}>
               <Edit sx={{ mr: 1, verticalAlign: 'middle' }} />
-              Update Credit Card Details
+              Actualizar detalles de tarjeta de crédito
             </Typography>
           </Box>
 
@@ -305,11 +326,11 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
                 <Grid container spacing={3} alignItems="flex-end">
                   <Grid item xs={12} md={5}>
                     <TextField
-                      label="Account Number"
+                      label="Número de cuenta"
                       value={searchForm.accountId}
                       onChange={handleInputChange('accountId')}
                       error={!!updateState.validationErrors.accountId}
-                      helperText={updateState.validationErrors.accountId || '11 digits required'}
+                      helperText={updateState.validationErrors.accountId || 'Requiere 11 dígitos'}
                       disabled={loading || isFromList}
                       fullWidth
                       inputProps={{ maxLength: 11 }}
@@ -331,11 +352,11 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
 
                   <Grid item xs={12} md={5}>
                     <TextField
-                      label="Card Number"
+                      label="Número de tarjeta"
                       value={searchForm.cardNumber}
                       onChange={handleInputChange('cardNumber')}
                       error={!!updateState.validationErrors.cardNumber}
-                      helperText={updateState.validationErrors.cardNumber || '16 digits required'}
+                      helperText={updateState.validationErrors.cardNumber || 'Requiere 16 dígitos'}
                       disabled={loading || isFromList}
                       fullWidth
                       inputProps={{ maxLength: 16 }}
@@ -364,14 +385,14 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
                       fullWidth
                       sx={{ borderRadius: 2, py: 1.5 }}
                     >
-                      {loading ? 'Searching...' : 'Search'}
+                      {loading ? 'Buscando...' : 'Buscar'}
                     </Button>
                   </Grid>
                 </Grid>
 
                 {isFromList && (
                   <Alert severity="info" sx={{ mt: 2, borderRadius: 2 }}>
-                    Search criteria populated from card selection. Data loaded automatically.
+                    Los criterios de búsqueda provienen de la tarjeta seleccionada. Los datos se cargaron automáticamente.
                   </Alert>
                 )}
               </Box>
@@ -386,7 +407,7 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
                     onClick={() => setShowTestData(!showTestData)}
                     sx={{ borderRadius: 2 }}
                   >
-                    {showTestData ? 'Hide' : 'Show'} Test Data
+                    {showTestData ? 'Ocultar' : 'Mostrar'} datos de prueba
                   </Button>
                 </Box>
               )}
@@ -403,10 +424,10 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
                   }}
                 >
                   <Typography variant="subtitle2" gutterBottom color="info.main" fontWeight={600}>
-                    Test Credit Cards (Development Only)
+                    Tarjetas de prueba (solo desarrollo)
                   </Typography>
                   <Typography variant="caption" color="text.secondary" sx={{ mb: 2, display: 'block' }}>
-                    Click on any card to load for editing
+                    Haz clic en cualquier tarjeta para cargarla y editarla
                   </Typography>
                   
                   <Grid container spacing={1}>
@@ -432,12 +453,12 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
                           <Grid container spacing={2} alignItems="center" sx={{ width: '100%' }}>
                             <Grid item xs={12} sm={4}>
                               <Stack spacing={0.5}>
-                                <Typography variant="body2" fontWeight={600} color="primary.main">
-                                  Account: {item.accountId}
-                                </Typography>
-                                <Typography variant="body2" fontWeight={600} color="secondary.main" sx={{ fontFamily: 'monospace' }}>
-                                  Card: {item.cardNumber}
-                                </Typography>
+                              <Typography variant="body2" fontWeight={600} color="primary.main">
+                                Cuenta: {item.accountId}
+                              </Typography>
+                              <Typography variant="body2" fontWeight={600} color="secondary.main" sx={{ fontFamily: 'monospace' }}>
+                                Tarjeta: {item.cardNumber}
+                              </Typography>
                               </Stack>
                             </Grid>
                             
@@ -446,13 +467,13 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
                                 {item.description}
                               </Typography>
                               <Typography variant="caption" color="text.secondary">
-                                Holder: {item.holderName} • Exp: {item.expiry}
+                                Titular: {item.holderName} • Vigencia: {item.expiry}
                               </Typography>
                             </Grid>
                             
                             <Grid item xs={12} sm={4}>
                               <Chip
-                                label={item.status}
+                                label={getStatusLabel(item.status)}
                                 size="small"
                                 color={getTestStatusColor(item.status) as any}
                                 variant="outlined"
@@ -467,11 +488,11 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
                   {/* Instrucciones adicionales */}
                   <Box sx={{ mt: 2, p: 2, bgcolor: alpha(theme.palette.warning.main, 0.1), borderRadius: 1 }}>
                     <Typography variant="caption" color="text.secondary">
-                      <strong>Testing Tips:</strong><br />
-                      • Each test card has different editable fields<br />
-                      • Try changing names, status, and expiry dates<br />
-                      • Use F5 to save changes, F12 to cancel<br />
-                      • All test data is for development purposes only
+                      <strong>Consejos de prueba:</strong><br />
+                      • Cada tarjeta de prueba tiene campos editables distintos<br />
+                      • Prueba cambiar nombres, estados y fechas de vigencia<br />
+                      • Usa F5 para guardar cambios, F12 para cancelar<br />
+                      • Todos los datos de prueba son únicamente para desarrollo
                     </Typography>
                   </Box>
                 </Paper>
@@ -507,14 +528,14 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
                     <CardContent>
                       <Typography variant="h6" gutterBottom color="primary.main">
                         <CreditCard sx={{ mr: 1, verticalAlign: 'middle' }} />
-                        Card Information
+                        Información de la tarjeta
                       </Typography>
                       <Divider sx={{ mb: 2 }} />
                       
                       <Stack spacing={2}>
                         <Box>
                           <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                            Account Number:
+                            Número de cuenta:
                           </Typography>
                           <Typography variant="h6" fontFamily="monospace" fontWeight={600}>
                             {updateState.oldDetails.accountId.toString().padStart(11, '0')}
@@ -523,7 +544,7 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
 
                         <Box>
                           <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
-                            Card Number:
+                            Número de tarjeta:
                           </Typography>
                           <Typography variant="h6" fontFamily="monospace" fontWeight={600}>
                             {updateState.oldDetails.cardNumber}
@@ -540,13 +561,13 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
                     <CardContent>
                       <Typography variant="h6" gutterBottom color="primary.main">
                         <Person sx={{ mr: 1, verticalAlign: 'middle' }} />
-                        Editable Details
+                        Detalles editables
                       </Typography>
                       <Divider sx={{ mb: 2 }} />
                       
                       <Stack spacing={2}>
                         <TextField
-                          label="Name on Card"
+                          label="Nombre en la tarjeta"
                           value={updateState.newDetails.embossedName}
                           onChange={handleTextFieldUpdate('embossedName')}
                           error={!!updateState.validationErrors.embossedName}
@@ -558,16 +579,16 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
                         />
 
                         <FormControl fullWidth disabled={!canEdit || loading}>
-                          <InputLabel>Card Status</InputLabel>
+                          <InputLabel>Estado de la tarjeta</InputLabel>
                           <Select
                             value={updateState.newDetails.activeStatus}
                             onChange={handleSelectUpdate('activeStatus')}
                             error={!!updateState.validationErrors.activeStatus}
-                            label="Card Status"
+                            label="Estado de la tarjeta"
                             sx={{ borderRadius: 2 }}
                           >
-                            <MenuItem value="A">A - Active</MenuItem>
-                            <MenuItem value="I">I - Inactive</MenuItem>
+                            <MenuItem value="A">A - Activa</MenuItem>
+                            <MenuItem value="I">I - Inactiva</MenuItem>
                           </Select>
                           {updateState.validationErrors.activeStatus && (
                             <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1 }}>
@@ -579,12 +600,12 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
                         <Box>
                           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                             <CalendarToday sx={{ fontSize: 16, mr: 0.5 }} />
-                            Expiry Date:
+                            Fecha de vigencia:
                           </Typography>
                           <Grid container spacing={1}>
                             <Grid item xs={6}>
                               <TextField
-                                label="Month"
+                                label="Mes"
                                 value={updateState.newDetails.expiryMonth}
                                 onChange={handleTextFieldUpdate('expiryMonth')}
                                 error={!!updateState.validationErrors.expiryMonth}
@@ -597,7 +618,7 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
                             </Grid>
                             <Grid item xs={6}>
                               <TextField
-                                label="Year"
+                                label="Año"
                                 value={updateState.newDetails.expiryYear}
                                 onChange={handleTextFieldUpdate('expiryYear')}
                                 error={!!updateState.validationErrors.expiryYear}
@@ -620,20 +641,20 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
                   <Card elevation={1}>
                     <CardContent>
                       <Typography variant="h6" gutterBottom color="primary.main">
-                        Current Status
+                        Estado actual
                       </Typography>
                       <Divider sx={{ mb: 2 }} />
                       
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                         <Chip
-                          label={updateState.oldDetails.activeStatus}
+                          label={getStatusLabel(updateState.oldDetails.activeStatus)}
                           color={getStatusColor(updateState.oldDetails.activeStatus) as any}
                           icon={<CheckCircle />}
                           variant="filled"
                           sx={{ fontWeight: 600 }}
                         />
                         <Typography variant="body2" color="text.secondary">
-                          Current expiry: {updateState.oldDetails.expiryMonth}/{updateState.oldDetails.expiryYear}
+                          Vigencia actual: {updateState.oldDetails.expiryMonth}/{updateState.oldDetails.expiryYear}
                         </Typography>
                       </Box>
                     </CardContent>
@@ -661,24 +682,24 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
               <Box>
                 {updateState.changeAction === 'NOT_FETCHED' && (
                   <Typography variant="body2" color="text.secondary">
-                    Enter Account and Card Number to continue
+                    Ingresa número de cuenta y número de tarjeta para continuar
                   </Typography>
                 )}
                 {(updateState.changeAction === 'SHOW_DETAILS' || updateState.changeAction === 'CHANGES_NOT_OK') && (
                   <Typography variant="body2" color="text.secondary">
-                    Make changes and press ENTER to validate
+                    Realiza cambios y presiona ENTER para validar
                   </Typography>
                 )}
                 {updateState.changeAction === 'CHANGES_OK_NOT_CONFIRMED' && (
-                  <Button
-                    variant="contained"
-                    onClick={() => setShowConfirmDialog(true)}
-                    startIcon={<Save />}
-                    disabled={loading}
-                    sx={{ borderRadius: 2 }}
-                  >
-                    F5 = Save Changes
-                  </Button>
+                    <Button
+                      variant="contained"
+                      onClick={() => setShowConfirmDialog(true)}
+                      startIcon={<Save />}
+                      disabled={loading}
+                      sx={{ borderRadius: 2 }}
+                    >
+                      F5 = Guardar cambios
+                    </Button>
                 )}
               </Box>
               
@@ -692,7 +713,7 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
                     disabled={loading}
                     sx={{ borderRadius: 2 }}
                   >
-                    ENTER = Validate
+                    ENTER = Validar
                   </Button>
                 )}
                 
@@ -705,7 +726,7 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
                     disabled={loading}
                     sx={{ borderRadius: 2 }}
                   >
-                    F12 = Cancel
+                    F12 = Cancelar
                   </Button>
                 )}
                 
@@ -717,7 +738,7 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
                   disabled={loading}
                   sx={{ borderRadius: 2 }}
                 >
-                  F3 = Exit
+                  F3 = Salir
                 </Button>
               </Stack>
             </Stack>
@@ -733,30 +754,30 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
         >
           <DialogTitle>
             <Warning sx={{ mr: 1, verticalAlign: 'middle', color: 'warning.main' }} />
-            Confirm Changes
+            Confirmar cambios
           </DialogTitle>
           <DialogContent>
             <Typography>
-              Are you sure you want to save the changes to this credit card?
+              ¿Estás seguro de que deseas guardar los cambios de esta tarjeta de crédito?
             </Typography>
             {updateState.newDetails && updateState.oldDetails && (
               <Box sx={{ mt: 2, p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
-                <Typography variant="subtitle2" gutterBottom>Changes to be saved:</Typography>
+                <Typography variant="subtitle2" gutterBottom>Cambios por guardar:</Typography>
                 <Stack spacing={1}>
                   {updateState.newDetails.embossedName !== updateState.oldDetails.embossedName && (
                     <Typography variant="body2">
-                      Name: {updateState.oldDetails.embossedName} → {updateState.newDetails.embossedName}
+                      Nombre: {updateState.oldDetails.embossedName} → {updateState.newDetails.embossedName}
                     </Typography>
                   )}
                   {updateState.newDetails.activeStatus !== (updateState.oldDetails.activeStatus === 'ACTIVE' ? 'A' : 'I') && (
                     <Typography variant="body2">
-                      Status: {updateState.oldDetails.activeStatus} → {updateState.newDetails.activeStatus === 'A' ? 'ACTIVE' : 'INACTIVE'}
+                      Estado: {getStatusLabel(updateState.oldDetails.activeStatus)} → {getStatusLabel(updateState.newDetails.activeStatus)}
                     </Typography>
                   )}
                   {(updateState.newDetails.expiryMonth !== updateState.oldDetails.expiryMonth || 
                     updateState.newDetails.expiryYear !== updateState.oldDetails.expiryYear) && (
                     <Typography variant="body2">
-                      Expiry: {updateState.oldDetails.expiryMonth}/{updateState.oldDetails.expiryYear} → {updateState.newDetails.expiryMonth}/{updateState.newDetails.expiryYear}
+                      Vigencia: {updateState.oldDetails.expiryMonth}/{updateState.oldDetails.expiryYear} → {updateState.newDetails.expiryMonth}/{updateState.newDetails.expiryYear}
                     </Typography>
                   )}
                 </Stack>
@@ -765,7 +786,7 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setShowConfirmDialog(false)}>
-              Cancel
+              Cancelar
             </Button>
             <Button 
               onClick={handleConfirmSave} 
@@ -773,7 +794,7 @@ export function CreditCardUpdateScreen({ onExit }: CreditCardUpdateScreenProps) 
               startIcon={<Save />}
               disabled={loading}
             >
-              {loading ? 'Saving...' : 'Save Changes'}
+              {loading ? 'Guardando...' : 'Guardar cambios'}
             </Button>
           </DialogActions>
         </Dialog>
